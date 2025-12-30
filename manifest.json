@@ -1,7 +1,7 @@
 {
-  "name": "My First Android App",
-  "short_name": "My App",
-  "start_url": "./",
+  "name": "Security+ Typing Game",
+  "short_name": "Sec+ Game",
+  "start_url": "/CompTIA-Security-game/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#0f172a",
