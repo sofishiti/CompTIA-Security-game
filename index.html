@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Security+ Typing Memorizer</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="description" content="Memorize Security+ concepts through typing practice">
+    <meta name="mobile-web-app-capable" content="yes">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #f1f5f9;
+            min-height: 100vh;
+            padding: 20px;
+            padding-bottom: 80px; /* Space for mobile controls */
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 15px;
+            border: 1px solid #334155;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+        }
+        
+        .app-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .app-btn {
+            padding: 8px 15px;
+            background: rgba(71, 85, 105, 0.7);
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .app-btn:hover {
+            background: rgba(100, 116, 139, 0.7);
+        }
+        
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            background: rgba(30, 41, 59, 0.7);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid #334155;
+        }
+        
+        .stat-box {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #475569;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #60a5fa;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        
+        .practice-area {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+        
+        .topic-info {
+            margin-bottom: 20px;
+        }
+        
+        .topic-title {
+            font-size: 1.5rem;
+            color: #f8fafc;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #475569;
+        }
+        
+        .definition-box {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #475569;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+            min-height: 120px;
+        }
+        
+        .typing-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            font-size: 1rem;
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid #475569;
+            border-radius: 10px;
+            color: #f1f5f9;
+            resize: none;
+            line-height: 1.4;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
+        }
+        
+        textarea.correct {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.05);
+        }
+        
+        textarea.incorrect {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.05);
+        }
+        
+        .typing-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            color: #94a3b8;
+            font-size: 0.8rem;
+        }
+        
+        .char-count {
+            margin-top: 8px;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            text-align: right;
+        }
+        
+        .speed-meter {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .speed-indicator {
+            color: #60a5fa;
+            font-weight: bold;
+        }
+        
+        .accuracy-meter {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .accuracy-fill {
+            height: 6px;
+            background: linear-gradient(to right, #10b981, #3b82f6);
+            border-radius: 3px;
+            flex-grow: 1;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: #334155;
+            border-radius: 3px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #60a5fa, #3b82f6);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .feedback.correct {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            opacity: 1;
+        }
+        
+        .feedback.incorrect {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            opacity: 1;
+        }
+        
+        /* Mobile-specific controls */
+        .mobile-controls {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 15px;
+            border-top: 1px solid #334155;
+            z-index: 1000;
+        }
+        
+        .mobile-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .mobile-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mobile-btn.check {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
+        
+        .mobile-btn.skip {
+            background: rgba(71, 85, 105, 0.7);
+            border: 1px solid #475569;
+        }
+        
+        .mobile-btn.repeat {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .mobile-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .desktop-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 140px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(71, 85, 105, 0.7);
+            color: white;
+            border: 1px solid #475569;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(100, 116, 139, 0.7);
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                padding-bottom: 80px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+                gap: 8px;
+            }
+            
+            .subtitle {
+                font-size: 0.8rem;
+            }
+            
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 10px;
+                gap: 8px;
+            }
+            
+            .stat-box {
+                padding: 10px;
+            }
+            
+            .stat-value {
+                font-size: 1.2rem;
+            }
+            
+            .topic-title {
+                font-size: 1.3rem;
+            }
+            
+            .definition-box {
+                font-size: 1rem;
+                padding: 15px;
+                min-height: 100px;
+            }
+            
+            textarea {
+                height: 100px;
+                font-size: 0.95rem;
+                padding: 12px;
+            }
+            
+            button {
+                min-width: 100%;
+                padding: 15px;
+            }
+            
+            .desktop-controls {
+                display: none;
+            }
+            
+            .mobile-controls {
+                display: block;
+            }
+            
+            .app-controls {
+                justify-content: space-around;
+            }
+            
+            .app-btn {
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .mobile-buttons {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            
+            .mobile-btn {
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+            
+            .topic-title {
+                font-size: 1.2rem;
+            }
+            
+            .definition-box {
+                font-size: 0.95rem;
+            }
+        }
+        
+        /* Android PWA optimizations */
+        @media (display-mode: standalone) {
+            body {
+                padding-top: 30px;
+            }
+            
+            header {
+                margin-top: 10px;
+            }
+        }
+        
+        .difficulty-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .difficulty-btn {
+            padding: 8px 16px;
+            background: rgba(71, 85, 105, 0.7);
+            border: 1px solid #475569;
+            border-radius: 20px;
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .difficulty-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+        
+        .concept-count {
+            margin-top: 10px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Security+ Typing Memorizer</h1>
+            <p class="subtitle">Type to memorize. Repeat to master. Perfect for Security+ exam prep.</p>
+            
+            <div class="app-controls">
+                <button class="app-btn" onclick="toggleTheme()">🌙 Theme</button>
+                <button class="app-btn" onclick="exportProgress()">📊 Export</button>
+                <button class="app-btn" onclick="resetProgress()">🔄 Reset</button>
+                <button class="app-btn" onclick="showHelp()">❓ Help</button>
+            </div>
+            
+            <div class="difficulty-selector">
+                <button class="difficulty-btn active" onclick="setDifficulty('all')">All Topics</button>
+                <button class="difficulty-btn" onclick="setDifficulty('easy')">Easy</button>
+                <button class="difficulty-btn" onclick="setDifficulty('medium')">Medium</button>
+                <button class="difficulty-btn" onclick="setDifficulty('hard')">Hard</button>
+            </div>
+            
+            <div class="concept-count" id="conceptCount">Loading 65+ concepts...</div>
+        </header>
+        
+        <div class="stats-bar">
+            <div class="stat-box">
+                <div class="stat-value" id="wpm">0</div>
+                <div class="stat-label">Words/Min</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="accuracy">0%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="streak">0</div>
+                <div class="stat-label">Streak</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="completed">0/65</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+        
+        <div class="practice-area">
+            <div class="topic-info">
+                <div class="topic-title" id="topicTitle">Loading...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <div class="definition-box" id="definitionText">
+                Loading Security+ concepts...
+            </div>
+            
+            <div class="typing-box">
+                <textarea id="userInput" placeholder="Start typing the definition above. Type as fast as you can accurately..."></textarea>
+                <div class="typing-hint">Enter to check • Ctrl+N next</div>
+                <div class="char-count">
+                    <span id="charTyped">0</span> characters typed
+                </div>
+            </div>
+            
+            <div class="speed-meter">
+                <div>Speed: <span class="speed-indicator" id="currentSpeed">0 WPM</span></div>
+                <div>Time: <span class="speed-indicator" id="typingTime">0s</span></div>
+            </div>
+            
+            <div class="accuracy-meter">
+                <div>Accuracy: <span id="currentAccuracy">0%</span></div>
+                <div class="accuracy-fill" id="accuracyFill"></div>
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
+            
+            <div class="desktop-controls">
+                <button class="btn-primary" onclick="checkAnswer()">
+                    <span>✓</span> Check & Continue
+                </button>
+                <button class="btn-secondary" onclick="skipTopic()">
+                    <span>→</span> Skip Topic
+                </button>
+                <button class="btn-success" onclick="repeatTopic()">
+                    <span>↻</span> Repeat 3x
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Controls -->
+        <div class="mobile-controls">
+            <div class="mobile-buttons">
+                <button class="mobile-btn check" onclick="checkAnswer()">
+                    <span style="font-size: 1.2rem;">✓</span>
+                    Check
+                </button>
+                <button class="mobile-btn skip" onclick="skipTopic()">
+                    <span style="font-size: 1.2rem;">→</span>
+                    Skip
+                </button>
+                <button class="mobile-btn repeat" onclick="repeatTopic()">
+                    <span style="font-size: 1.2rem;">↻</span>
+                    Repeat
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Complete Security+ concepts data - 65+ topics
+        const allConcepts = [
+            // Core Security Principles (10)
+            {title: "CIA Triad", text: "Confidentiality protects sensitive information from unauthorized access through encryption and access controls.", difficulty: "easy"},
+            {title: "Integrity", text: "Integrity ensures data remains accurate and unaltered using hashing digital signatures and validation.", difficulty: "easy"},
+            {title: "Availability", text: "Availability ensures systems are accessible when needed using redundancy backups and load balancing.", difficulty: "easy"},
+            {title: "Zero Trust", text: "Zero trust assumes no implicit trust and requires continuous verification of all access requests.", difficulty: "medium"},
+            {title: "Least Privilege", text: "Least privilege grants users only the minimum permissions needed to perform their tasks.", difficulty: "medium"},
+            {title: "Defense in Depth", text: "Defense in depth employs multiple security layers to protect assets and prevent single point failures.", difficulty: "medium"},
+            {title: "Non-Repudiation", text: "Non repudiation prevents parties from denying their actions through digital signatures and audit logs.", difficulty: "medium"},
+            {title: "AAA Framework", text: "Authentication Authorization and Accounting provide access control through identity verification permissions and logging.", difficulty: "medium"},
+            {title: "Separation of Duties", text: "Separation of duties divides critical tasks among multiple people to prevent fraud and errors.", difficulty: "hard"},
+            {title: "Need to Know", text: "Need to know principle restricts access to information only to those who require it for their duties.", difficulty: "medium"},
+            
+            // Cryptography Essentials (15)
+            {title: "Symmetric Encryption", text: "Symmetric encryption uses a single shared key for both encryption and decryption of data.", difficulty: "easy"},
+            {title: "Asymmetric Encryption", text: "Asymmetric encryption uses public and private key pairs for secure communication and key exchange.", difficulty: "medium"},
+            {title: "Hashing", text: "Hashing creates a fixed size unique fingerprint of data that cannot be reversed to original form.", difficulty: "easy"},
+            {title: "Digital Signatures", text: "Digital signatures provide authenticity integrity and non repudiation using asymmetric cryptography.", difficulty: "medium"},
+            {title: "PKI", text: "Public Key Infrastructure manages digital certificates and enables secure electronic communications.", difficulty: "hard"},
+            {title: "SSL/TLS", text: "Secure Sockets Layer and Transport Layer Security provide encrypted communication channels over networks.", difficulty: "medium"},
+            {title: "AES", text: "Advanced Encryption Standard is a symmetric encryption algorithm that uses 128 192 or 256 bit keys.", difficulty: "medium"},
+            {title: "RSA", text: "Rivest Shamir Adleman is an asymmetric encryption algorithm widely used for secure data transmission.", difficulty: "hard"},
+            {title: "ECC", text: "Elliptic Curve Cryptography provides strong security with smaller key sizes compared to traditional RSA.", difficulty: "hard"},
+            {title: "Quantum Cryptography", text: "Quantum cryptography uses quantum mechanical properties to secure communication channels.", difficulty: "hard"},
+            {title: "Steganography", text: "Steganography hides messages within other files like images audio or video to conceal their existence.", difficulty: "medium"},
+            {title: "Key Exchange", text: "Key exchange protocols like Diffie Hellman enable secure sharing of cryptographic keys over public channels.", difficulty: "hard"},
+            {title: "Digital Certificate", text: "Digital certificates bind public keys to identities and are issued by trusted Certificate Authorities.", difficulty: "medium"},
+            {title: "CRL", text: "Certificate Revocation List contains revoked digital certificates that are no longer trusted.", difficulty: "medium"},
+            {title: "OCSP", text: "Online Certificate Status Protocol provides real time verification of certificate validity.", difficulty: "hard"},
+            
+            // Common Threats & Attacks (15)
+            {title: "Phishing", text: "Phishing uses deceptive communications to trick users into revealing sensitive information.", difficulty: "easy"},
+            {title: "Malware", text: "Malware is malicious software designed to damage disrupt or gain unauthorized system access.", difficulty: "easy"},
+            {title: "Ransomware", text: "Ransomware encrypts victim data and demands payment for decryption key release.", difficulty: "medium"},
+            {title: "SQL Injection", text: "SQL injection manipulates database queries through unsanitized user input fields.", difficulty: "medium"},
+            {title: "DDoS", text: "Distributed Denial of Service overwhelms systems with traffic to disrupt availability.", difficulty: "medium"},
+            {title: "Man-in-the-Middle", text: "MitM attacks intercept and potentially alter communication between two parties.", difficulty: "medium"},
+            {title: "XSS", text: "Cross Site Scripting injects malicious scripts into web pages viewed by other users.", difficulty: "medium"},
+            {title: "Buffer Overflow", text: "Buffer overflow exploits occur when data exceeds buffer boundaries overwriting memory.", difficulty: "hard"},
+            {title: "Social Engineering", text: "Social engineering manipulates people into revealing confidential information.", difficulty: "easy"},
+            {title: "Insider Threats", text: "Insider threats come from individuals within an organization with authorized access.", difficulty: "medium"},
+            {title: "Zero-Day Exploits", text: "Zero day exploits target vulnerabilities unknown to software vendors before discovery.", difficulty: "hard"},
+            {title: "APT", text: "Advanced Persistent Threats are prolonged targeted attacks often by nation state actors.", difficulty: "hard"},
+            {title: "Botnets", text: "Botnets are networks of compromised computers controlled remotely for malicious purposes.", difficulty: "medium"},
+            {title: "Cryptojacking", text: "Cryptojacking secretly uses victims computing resources to mine cryptocurrency.", difficulty: "medium"},
+            {title: "Supply Chain Attacks", text: "Supply chain attacks target less secure elements in the supply chain to compromise targets.", difficulty: "hard"},
+            
+            // Security Controls & Tools (15)
+            {title: "Firewall", text: "Firewalls filter network traffic based on security rules to protect internal networks.", difficulty: "easy"},
+            {title: "IDS/IPS", text: "Intrusion Detection Systems monitor while Intrusion Prevention Systems block suspicious activities.", difficulty: "medium"},
+            {title: "VPN", text: "Virtual Private Networks create encrypted tunnels for secure remote network access.", difficulty: "easy"},
+            {title: "MFA", text: "Multi Factor Authentication requires multiple verification methods for user authentication.", difficulty: "easy"},
+            {title: "SIEM", text: "Security Information and Event Management collects and analyzes security log data.", difficulty: "hard"},
+            {title: "DLP", text: "Data Loss Prevention systems monitor and control data transfers to prevent unauthorized disclosure.", difficulty: "medium"},
+            {title: "NAC", text: "Network Access Control restricts network access based on device compliance with security policies.", difficulty: "medium"},
+            {title: "Honeypot", text: "Honeypots are decoy systems designed to attract and study cyber attacks.", difficulty: "medium"},
+            {title: "WAF", text: "Web Application Firewalls protect web applications by filtering monitoring HTTP traffic.", difficulty: "medium"},
+            {title: "EDR", text: "Endpoint Detection and Response monitors endpoint activities to detect and respond to threats.", difficulty: "hard"},
+            {title: "SOAR", text: "Security Orchestration Automation and Response streamlines security operations through automation.", difficulty: "hard"},
+            {title: "CASB", text: "Cloud Access Security Brokers enforce security policies between cloud users and providers.", difficulty: "hard"},
+            {title: "IAM", text: "Identity and Access Management controls user identities and their access to resources.", difficulty: "medium"},
+            {title: "PAM", text: "Privileged Access Management controls and monitors access for privileged accounts.", difficulty: "hard"},
+            {title: "SASE", text: "Secure Access Service Edge combines network and security functions in cloud native architecture.", difficulty: "hard"},
+            
+            // Risk Management & Compliance (10)
+            {title: "Risk Assessment", text: "Risk assessment identifies analyzes and evaluates potential security risks to assets.", difficulty: "medium"},
+            {title: "Incident Response", text: "Incident response follows prepare identify contain eradicate recover lessons learned phases.", difficulty: "medium"},
+            {title: "Business Continuity", text: "Business continuity ensures critical operations continue during and after disasters.", difficulty: "medium"},
+            {title: "Disaster Recovery", text: "Disaster recovery focuses on restoring IT systems and data after catastrophic events.", difficulty: "medium"},
+            {title: "Change Management", text: "Change management controls modifications to systems to prevent security breaches.", difficulty: "medium"},
+            {title: "Vulnerability Management", text: "Vulnerability management identifies classifies remediates and mitigates vulnerabilities.", difficulty: "medium"},
+            {title: "Penetration Testing", text: "Penetration testing simulates cyber attacks to identify security weaknesses.", difficulty: "hard"},
+            {title: "Security Audits", text: "Security audits systematically evaluate security controls against established criteria.", difficulty: "medium"},
+            {title: "Compliance Frameworks", text: "Compliance frameworks like NIST ISO provide structured approaches to security management.", difficulty: "hard"},
+            {title: "SOC Reports", text: "Service Organization Control reports verify service providers security controls and compliance.", difficulty: "hard"}
+        ];
+
+        // Additional concepts to reach 65+
+        const additionalConcepts = [
+            // Network Security
+            {title: "DMZ", text: "Demilitarized Zone is a perimeter network that exposes external services while protecting internal networks.", difficulty: "medium"},
+            {title: "VPN Protocols", text: "VPN protocols like IPsec OpenVPN and WireGuard provide secure encrypted connections over networks.", difficulty: "hard"},
+            {title: "Port Security", text: "Port security restricts network access by limiting which devices can connect to specific switch ports.", difficulty: "medium"},
+            {title: "802.1X", text: "IEEE 802.1X provides port based network access control for wired and wireless networks.", difficulty: "hard"},
+            
+            // Cloud Security
+            {title: "Shared Responsibility", text: "Shared responsibility model divides security duties between cloud providers and customers.", difficulty: "medium"},
+            {title: "Cloud Security Posture", text: "Cloud Security Posture Management continuously monitors cloud environments for misconfigurations.", difficulty: "hard"},
+            
+            // Mobile & IoT Security
+            {title: "MDM", text: "Mobile Device Management secures monitors and manages mobile devices across organizations.", difficulty: "medium"},
+            {title: "App Sandboxing", text: "Application sandboxing isolates apps to prevent access to other apps or system data.", difficulty: "medium"},
+            {title: "Biometrics", text: "Biometric authentication uses unique biological traits like fingerprints for access control.", difficulty: "easy"},
+            {title: "Remote Wipe", text: "Remote wipe erases data from lost or stolen mobile devices to prevent data breaches.", difficulty: "easy"},
+            {title: "Containerization", text: "Containerization separates personal and corporate data on mobile devices.", difficulty: "medium"},
+            
+            // Physical Security
+            {title: "Access Control Systems", text: "Access control systems restrict physical entry using cards biometrics or keypads.", difficulty: "easy"},
+            {title: "Environmental Controls", text: "Environmental controls manage temperature humidity and fire suppression in data centers.", difficulty: "medium"},
+            
+            // Miscellaneous
+            {title: "Kerberos", text: "Kerberos is a network authentication protocol that uses tickets to avoid transmitting passwords.", difficulty: "hard"},
+            {title: "SAML", text: "Security Assertion Markup Language enables single sign on for web applications across domains.", difficulty: "hard"},
+            {title: "OAuth", text: "OAuth is an authorization framework that allows third party services limited access without credentials.", difficulty: "hard"},
+            {title: "RAID", text: "Redundant Array of Independent Disks provides data redundancy and performance improvements.", difficulty: "medium"}
+        ];
+
+        // Merge all concepts
+        const concepts = [...allConcepts, ...additionalConcepts];
+
+        // Game state
+        let currentIndex = 0;
+        let correctStreak = 0;
+        let totalCorrect = 0;
+        let totalAttempts = 0;
+        let repeatCount = 0;
+        const maxRepeats = 3;
+        let typingStartTime = null;
+        let currentWPM = 0;
+        let completedTopics = new Set();
+        let currentDifficulty = 'all';
+        let filteredConcepts = concepts;
+
+        // DOM elements
+        const topicTitle = document.getElementById('topicTitle');
+        const definitionText = document.getElementById('definitionText');
+        const userInput = document.getElementById('userInput');
+        const feedback = document.getElementById('feedback');
+        const wpmElement = document.getElementById('wpm');
+        const accuracyElement = document.getElementById('accuracy');
+        const streakElement = document.getElementById('streak');
+        const completedElement = document.getElementById('completed');
+        const progressFill = document.getElementById('progressFill');
+        const charTyped = document.getElementById('charTyped');
+        const currentSpeed = document.getElementById('currentSpeed');
+        const typingTime = document.getElementById('typingTime');
+        const currentAccuracy = document.getElementById('currentAccuracy');
+        const accuracyFill = document.getElementById('accuracyFill');
+        const conceptCount = document.getElementById('conceptCount');
+
+        // Initialize
+        function init() {
+            loadUserProgress();
+            filterConceptsByDifficulty(currentDifficulty);
+            loadConcept();
+            setupEventListeners();
+            updateStats();
+            
+            // Update concept count display
+            conceptCount.textContent = `${filteredConcepts.length} Security+ concepts loaded`;
+            
+            // Initialize PWA
+            initPWA();
+        }
+
+        // Initialize PWA features
+        function initPWA() {
+            // Check if app is installed
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log("Running as PWA");
+            }
+            
+            // Register service worker for offline capability
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(console.error);
+            }
+            
+            // Prevent accidental zoom on mobile
+            document.addEventListener('touchstart', function(e) {
+                if (e.touches.length > 1) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        }
+
+        // Filter concepts by difficulty
+        function filterConceptsByDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            
+            if (difficulty === 'all') {
+                filteredConcepts = concepts;
+            } else {
+                filteredConcepts = concepts.filter(c => c.difficulty === difficulty);
+            }
+            
+            // Update UI
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Reset to first concept
+            currentIndex = 0;
+            loadConcept();
+            
+            // Update display
+            conceptCount.textContent = `${filteredConcepts.length} ${difficulty} concepts`;
+            
+            // Show notification
+            showFeedback(`Switched to ${difficulty} mode (${filteredConcepts.length} concepts)`, 'correct');
+        }
+
+        // Set difficulty level
+        function setDifficulty(level) {
+            filterConceptsByDifficulty(level);
+        }
+
+        // Load user progress from localStorage
+        function loadUserProgress() {
+            const savedProgress = localStorage.getItem('securityPlusProgress');
+            if (savedProgress) {
+                const progress = JSON.parse(savedProgress);
+                completedTopics = new Set(progress.completedTopics || []);
+                totalCorrect = progress.totalCorrect || 0;
+                totalAttempts = progress.totalAttempts || 0;
+                correctStreak = progress.correctStreak || 0;
+                currentWPM = progress.avgWPM || 0;
+            }
+        }
+
+        // Save user progress to localStorage
+        function saveUserProgress() {
+            const progress = {
+                completedTopics: Array.from(completedTopics),
+                totalCorrect: totalCorrect,
+                totalAttempts: totalAttempts,
+                correctStreak: correctStreak,
+                avgWPM: currentWPM,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('securityPlusProgress', JSON.stringify(progress));
+        }
+
+        // Export progress data
+        function exportProgress() {
+            const progress = {
+                completed: completedTopics.size,
+                total: concepts.length,
+                accuracy: totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0,
+                streak: correctStreak,
+                avgWPM: currentWPM,
+                date: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(progress, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `security-plus-progress-${new Date().toISOString().slice(0,10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showFeedback('Progress exported successfully!', 'correct');
+        }
+
+        // Reset all progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                localStorage.removeItem('securityPlusProgress');
+                completedTopics = new Set();
+                totalCorrect = 0;
+                totalAttempts = 0;
+                correctStreak = 0;
+                currentWPM = 0;
+                currentIndex = 0;
+                loadConcept();
+                updateStats();
+                showFeedback('Progress reset successfully!', 'correct');
+            }
+        }
+
+        // Toggle dark/light theme
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.style.background.includes('0f172a');
+            
+            if (isDark) {
+                // Switch to light theme
+                body.style.background = 'linear-gradient(135deg, #f8fafc, #e2e8f0)';
+                body.style.color = '#1e293b';
+                showFeedback('Switched to light theme', 'correct');
+            } else {
+                // Switch to dark theme
+                body.style.background = 'linear-gradient(135deg, #0f172a, #1e293b)';
+                body.style.color = '#f1f5f9';
+                showFeedback('Switched to dark theme', 'correct');
+            }
+        }
+
+        // Show help modal
+        function showHelp() {
+            const helpText = `
+            SECURITY+ TYPING MEMORIZER HELP
+            
+            How to use:
+            1. Type the definition shown above
+            2. Press Enter or click Check to verify
+            3. Repeat concepts 3x for better memorization
+            
+            Keyboard Shortcuts:
+            - Enter: Check answer
+            - Ctrl+N: Skip to next concept
+            - Ctrl+R: Repeat current concept
+            - Escape: Clear typing box
+            
+            Features:
+            - Track your WPM (Words Per Minute)
+            - Monitor accuracy percentage
+            - Build correct answer streaks
+            - Difficulty filtering (Easy/Medium/Hard)
+            - Progress saving (automatic)
+            
+            Tips:
+            - Accuracy matters more than speed
+            - Use "Repeat 3x" for difficult concepts
+            - Practice daily for best results
+            - Export progress to track improvement
+            `;
+            
+            alert(helpText);
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            userInput.addEventListener('input', handleTyping);
+            userInput.addEventListener('keydown', handleKeydown);
+            userInput.focus();
+            
+            // Auto-save on unload
+            window.addEventListener('beforeunload', saveUserProgress);
+            
+            // Auto-save every 30 seconds
+            setInterval(saveUserProgress, 30000);
+        }
+
+        // Handle typing input
+        function handleTyping() {
+            if (!typingStartTime) {
+                typingStartTime = new Date();
+            }
+            
+            const text = userInput.value;
+            charTyped.textContent = text.length;
+            
+            // Calculate real-time WPM
+            if (typingStartTime) {
+                const timeElapsed = (new Date() - typingStartTime) / 1000 / 60; // in minutes
+                const words = text.trim().split(/\s+/).length;
+                currentWPM = timeElapsed > 0 ? Math.round(words / timeElapsed) : 0;
+                currentSpeed.textContent = `${currentWPM} WPM`;
+                
+                const seconds = Math.round((new Date() - typingStartTime) / 1000);
+                typingTime.textContent = `${seconds}s`;
+            }
+            
+            // Check for auto-completion
+            const targetText = filteredConcepts[currentIndex].text.toLowerCase();
+            const userText = text.toLowerCase();
+            
+            if (userText === targetText) {
+                userInput.classList.add('correct');
+                setTimeout(() => checkAnswer(), 300);
+            } else if (targetText.startsWith(userText)) {
+                userInput.classList.remove('incorrect');
+                userInput.classList.remove('correct');
+            } else {
+                userInput.classList.add('incorrect');
+                userInput.classList.remove('correct');
+            }
+        }
+
+        // Handle keyboard shortcuts
+        function handleKeydown(e) {
+            // Enter to check answer
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                checkAnswer();
+            }
+            // Ctrl+N for next
+            else if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                skipTopic();
+            }
+            // Ctrl+R for repeat
+            else if (e.ctrlKey && e.key === 'r') {
+                e.preventDefault();
+                repeatTopic();
+            }
+            // Escape to clear
+            else if (e.key === 'Escape') {
+                userInput.value = '';
+                userInput.classList.remove('correct', 'incorrect');
+                typingStartTime = null;
+                charTyped.textContent = '0';
+                currentSpeed.textContent = '0 WPM';
+                typingTime.textContent = '0s';
+                definitionText.innerHTML = filteredConcepts[currentIndex].text;
+            }
+        }
+
+        // Load a concept
+        function loadConcept() {
+            if (filteredConcepts.length === 0) {
+                topicTitle.textContent = "No concepts available";
+                definitionText.textContent = "Select a different difficulty level or reset the app.";
+                return;
+            }
+            
+            const concept = filteredConcepts[currentIndex];
+            topicTitle.textContent = concept.title;
+            definitionText.innerHTML = concept.text;
+            
+            userInput.value = '';
+            userInput.classList.remove('correct', 'incorrect');
+            feedback.className = 'feedback';
+            feedback.textContent = '';
+            
+            typingStartTime = null;
+            charTyped.textContent = '0';
+            currentSpeed.textContent = '0 WPM';
+            typingTime.textContent = '0s';
+            
+            updateProgress();
+            userInput.focus();
+        }
+
+        // Check answer
+        function checkAnswer() {
+            const userText = userInput.value.trim();
+            const correctText = filteredConcepts[currentIndex].text.trim();
+            
+            totalAttempts++;
+            
+            if (userText === correctText) {
+                // Correct answer
+                correctStreak++;
+                totalCorrect++;
+                
+                // Calculate accuracy
+                const accuracy = Math.round((totalCorrect / totalAttempts) * 100);
+                accuracyElement.textContent = `${accuracy}%`;
+                currentAccuracy.textContent = `${accuracy}%`;
+                accuracyFill.style.width = `${accuracy}%`;
+                
+                // Update WPM
+                wpmElement.textContent = currentWPM;
+                
+                // Update streak
+                streakElement.textContent = correctStreak;
+                
+                // Mark as completed
+                completedTopics.add(currentIndex);
+                completedElement.textContent = `${completedTopics.size}/${filteredConcepts.length}`;
+                
+                // Show feedback
+                showFeedback('✅ Perfect! Concept memorized.', 'correct');
+                
+                // Save progress
+                saveUserProgress();
+                
+                // Move to next concept after delay
+                setTimeout(() => {
+                    moveToNext();
+                }, 1500);
+                
+            } else {
+                // Incorrect answer
+                correctStreak = 0;
+                streakElement.textContent = '0';
+                
+                // Calculate accuracy
+                const accuracy = Math.round((totalCorrect / totalAttempts) * 100);
+                accuracyElement.textContent = `${accuracy}%`;
+                currentAccuracy.textContent = `${accuracy}%`;
+                accuracyFill.style.width = `${accuracy}%`;
+                
+                showFeedback('❌ Keep trying. Accuracy matters more than speed.', 'incorrect');
+                
+                // Highlight differences
+                highlightDifferences(userText, correctText);
+            }
+        }
+
+        // Show feedback
+        function showFeedback(message, type) {
+            feedback.textContent = message;
+            feedback.className = `feedback ${type}`;
+            setTimeout(() => {
+                feedback.style.opacity = '1';
+            }, 10);
+        }
+
+        // Highlight differences between user input and correct text
+        function highlightDifferences(userText, correctText) {
+            const userWords = userText.split(' ');
+            const correctWords = correctText.split(' ');
+            
+            let highlightedText = '';
+            for (let i = 0; i < correctWords.length; i++) {
+                if (i < userWords.length && userWords[i] === correctWords[i]) {
+                    highlightedText += `<span style="color: #10b981">${correctWords[i]}</span> `;
+                } else {
+                    highlightedText += `<span style="color: #ef4444; text-decoration: underline">${correctWords[i]}</span> `;
+                }
+            }
+            
+            definitionText.innerHTML = highlightedText;
+        }
+
+        // Move to next concept
+        function moveToNext() {
+            if (repeatCount < maxRepeats - 1) {
+                repeatCount++;
+                loadConcept();
+            } else {
+                repeatCount = 0;
+                currentIndex = (currentIndex + 1) % filteredConcepts.length;
+                loadConcept();
+            }
+        }
+
+        // Skip current topic
+        function skipTopic() {
+            if (filteredConcepts.length === 0) return;
+            
+            currentIndex = (currentIndex + 1) % filteredConcepts.length;
+            repeatCount = 0;
+            loadConcept();
+            showFeedback('⏭️ Topic skipped. Practice it later.', 'incorrect');
+        }
+
+        // Repeat current topic multiple times
+        function repeatTopic() {
+            repeatCount = 0;
+            loadConcept();
+            showFeedback('🔁 Repeating topic 3 times for muscle memory.', 'correct');
+        }
+
+        // Update progress
+        function updateProgress() {
+            if (filteredConcepts.length === 0) {
+                progressFill.style.width = '0%';
+                return;
+            }
+            
+            const progress = ((currentIndex + 1) / filteredConcepts.length) * 100;
+            progressFill.style.width = `${progress}%`;
+        }
+
+        // Update all stats
+        function updateStats() {
+            const accuracy = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+            accuracyElement.textContent = `${accuracy}%`;
+            currentAccuracy.textContent = `${accuracy}%`;
+            accuracyFill.style.width = `${accuracy}%`;
+            streakElement.textContent = correctStreak;
+            completedElement.textContent = `${completedTopics.size}/${filteredConcepts.length}`;
+            wpmElement.textContent = currentWPM;
+        }
+
+        // Initialize when page loads
+        window.onload = init;
+    </script>
+</body>
+</html>
